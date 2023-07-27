@@ -14,7 +14,7 @@ ph4=imageList['Desc'].loc[imageList.index[3]]
 ph5=imageList['Desc'].loc[imageList.index[4]]
 ph6=imageList['Desc'].loc[imageList.index[5]]
 
-img1="https://drive.google.com/uc?id=1y5Jo4K9ED7VIb0hHgZYp745Jyyi3ULXD"
+img1=html.Img(src="/assets/logo.jpg",className = 'center')
 img2="https://drive.google.com/uc?id=1l4NhluuAtzwFpu9BZYsOL_T1k5h0RCor"
 img3="https://drive.google.com/uc?id=1AVLGnDvnkZEgLbv7p8hFtS57CHw2BiK7"
 img4="https://drive.google.com/uc?id=1h3w3FwMevLBvVUy0BFXwFzXoKC0tBp6o"
