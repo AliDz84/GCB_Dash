@@ -6,7 +6,8 @@ import pandas as pd
 
 sheet_id='1Wj2jpW9-r7fzLAmkhBb3ue2nCOhHIcIS'
 imageList=pd.read_excel(f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=xlsx", sheet_name='ImgList')
-
+imageList2=pd.read_excel('/data/data.xlsx')
+ph1=imageList['Desc'].loc[imageList2.index[0]]
 ph1=imageList['Desc'].loc[imageList.index[0]]
 ph2=imageList['Desc'].loc[imageList.index[1]]
 ph3=imageList['Desc'].loc[imageList.index[2]]
