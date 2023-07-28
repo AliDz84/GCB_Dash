@@ -31,7 +31,7 @@ layout = html.Div(
             [               
                 dbc.Col(
                     [
-                            html.Img(src=img1,style={'height':'307px', 'width':'500px','margin-left': '40px'},className = 'center'),
+                            html.Img(src="/assets/logo.jpg",style={'height':'307px', 'width':'500px','margin-left': '40px'},className = 'center'),
 
                             html.P(ph1,
                            style={"color": "white",
