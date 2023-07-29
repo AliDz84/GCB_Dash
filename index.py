@@ -40,10 +40,10 @@ app.layout=dbc.Container([
                 [
             dbc.Row(
                 [           
-            html.Div("mon bb CONSTRUCTION OF SEPARATION AND DECARBONATION UNITS AT ALRAR EPC2 LOT 1",
-                        style={'frontsize':'50','textAlign':'center','color':'#ffffff','margin-top':'20px'}),
+            html.Div("CONSTRUCTION OF SEPARATION AND DECARBONATION UNITS AT ALRAR EPC2 LOT 1",
+                        style={'frontsize':'50','textAlign':'left','color':'#ffffff','margin-top':'20px'}),
             html.Div("- DASHBOARD",
-                        style={'frontsize':'50','bold':'True','textAlign':'center','color':'#ffffff'}),
+                        style={'frontsize':'50','bold':'True','textAlign':'left','color':'#ffffff'}),
             html.Hr(),
                     ]),
             dbc.Row(
