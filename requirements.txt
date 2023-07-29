@@ -3,5 +3,5 @@ dash_bootstrap_components
 pandas
 openpyxl
 gunicorn
-glob
+glob2
 
