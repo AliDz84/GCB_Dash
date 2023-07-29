@@ -27,7 +27,7 @@ app.layout=dbc.Container([
         dbc.Row(
         [
         dbc.Col([
-            html.Img(src="/assets/logo.jpg",className = 'left',style={'margin-top': '20px','margin-left':'20px'}),
+            html.Img(src="logo.jpg",className = 'left',style={'margin-top': '20px','margin-left':'20px'}),
             html.Br(),
             html.Br(),
             html.Br(),
