@@ -6,12 +6,12 @@ import pandas as pd
 import glob
 
 img=glob.glob("photosProgress/*.jpg")
-ph1=img[0][16:-4]
-ph2=img[1][16:-4]
-ph3=img[2][16:-4]
-ph4=img[3][16:-4]
-ph5=img[4][16:-4]
-ph6=img[5][16:-4]
+ph1=img[0][15:-4]
+ph2=img[1][15:-4]
+ph3=img[2][15:-4]
+ph4=img[3][15:-4]
+ph5=img[4][15:-4]
+ph6=img[5][15:-4]
 dash.register_page(__name__,name='Photos Progress')
 layout = html.Div(
     [
