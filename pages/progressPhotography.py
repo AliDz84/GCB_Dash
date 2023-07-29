@@ -5,13 +5,13 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import glob
 
-img=glob.glob("photosProgress/*.jpg")
-ph1=img[0][15:-4]
-ph2=img[1][15:-4]
-ph3=img[2][15:-4]
-ph4=img[3][15:-4]
-ph5=img[4][15:-4]
-ph6=img[5][15:-4]
+img=glob.glob("assets/*.jpg")
+ph1=img[0][7:-4]
+ph2=img[1][7:-4]
+ph3=img[2][7:-4]
+ph4=img[3][7:-4]
+ph5=img[4][7:-4]
+ph6=img[5][7:-4]
 dash.register_page(__name__,name='Photos Progress')
 layout = html.Div(
     [
