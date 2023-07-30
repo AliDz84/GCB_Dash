@@ -2,11 +2,13 @@ import dash
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
+import plotly.express as px
 import pandas as pd
 import glob
 
 
 dash.register_page(__name__,name='Commodity Status')
+data = pd.read_excel('assets/data.xlsx', sheet_name='commodity')
 layout = html.Div(
     [
         dbc.Row(
@@ -21,8 +23,10 @@ layout = html.Div(
                                   'line-height': '1.2',
                                   'text-align': 'center'
                                   }
-                           )   
-                        ],
+                           ),
+                            
+                            
+                        ],width=8,
                     className='',
                     xs=6,sm=6,md=6,lg=6,xl=6,xxl=6
                     ),
@@ -37,10 +41,12 @@ layout = html.Div(
                                   'line-height': '1.2',
                                   'text-align': 'center'
                                   }
-                           )    
+                           ),
+                            dcc.Graph(id='graph-1',figure=px.histogram(data,x='date',y='plan')),
                         ],
+                    width=10,
                     className='',
-                    xs=6,sm=6,md=6,lg=6,xl=6,xxl=6
+
                     ),
                 html.Br(),
                 

@@ -15,7 +15,6 @@ ph6=img[5][7:-4]
 dash.register_page(__name__,name='Photos Progress')
 layout = html.Div(
     [
-  
         dbc.Row(
             [               
                 dbc.Col(
