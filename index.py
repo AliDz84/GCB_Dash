@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from flask import Flask
 
 server=Flask(__name__)
-app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.SPACELAB])
+app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.SUPERHERO,dbc.icons.BOOTSTRAP])
 
 sidebar=dbc.Nav(
     [
@@ -23,6 +23,7 @@ sidebar=dbc.Nav(
     pills=True,
     className="bg-Blue",
             )
+
 app.layout=dbc.Container([
 
         dbc.Row(
@@ -42,9 +43,9 @@ app.layout=dbc.Container([
             dbc.Row(
                 [           
             html.Div("CONSTRUCTION OF SEPARATION AND DECARBONATION UNITS AT ALRAR EPC2 LOT 1",
-                        style={'frontsize':'50','textAlign':'left','color':'#ffffff','margin-top':'20px','background-color':'#EC5832'}),
+                        style={'frontsize':'30','textAlign':'left','color':'#ffffff','margin-top':'20px','background-color':'#EC5832'}),
             html.Div("- DASHBOARD",
-                        style={'frontsize':'50','bold':'True','textAlign':'left','color':'#ffffff','background-color':'#EC5832'}),
+                        style={'frontsize':'30','bold':'True','textAlign':'left','color':'#ffffff','background-color':'#EC5832'}),
             html.Hr(),
                     ]),
             dbc.Row(
@@ -60,4 +61,4 @@ app.layout=dbc.Container([
    
 
 if __name__ == '__main__':
-    app.run()
+    app.run_server()

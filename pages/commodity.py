@@ -18,9 +18,7 @@ texts = [y1, y2]
 for i, t in enumerate(texts):
     fig.data[i].text = t
     fig.data[i].textposition = 'outside'
-
-
-    
+  
 dash.register_page(__name__,name='Commodity Status')
 data = pd.read_excel('assets/data.xlsx', sheet_name='commodity')
 layout = html.Div(
@@ -54,7 +52,7 @@ layout = html.Div(
                                   }
                            ),
                     
-                            fig
+                            dcc.Graph(figure=fig)
                         
                         ],
                     width=10,
