@@ -3,10 +3,11 @@ from dash import html
 from dash import dcc
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+from flask import Flask
 
+server=Flask(__name__)
+app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.SPACELAB])
 
-app=dash.Dash(__name__,use_pages=True,external_stylesheets=[dbc.themes.SPACELAB])
-server = app.server
 sidebar=dbc.Nav(
     [
         dbc.NavLink(
