@@ -1,6 +1,5 @@
 import dash
-from dash import html
-from dash import dcc
+from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
@@ -8,37 +7,44 @@ import plotly.io as pio
 
 
 
-x = ['Aaron', 'Bob', 'Chris']
-y1 = [5, 10, 6]
-y2 = [8, 16, 12]
 
-fig = px.bar(x=x, y=[y1,y2],barmode='group')
 
-texts = [y1, y2]
-for i, t in enumerate(texts):
-    fig.data[i].text = t
-    fig.data[i].textposition = 'outside'
+
+
+
+
   
 dash.register_page(__name__,name='Commodity Status')
 data = pd.read_excel('assets/data.xlsx', sheet_name='commodity')
+fig = px.histogram(data,x='date', y=['plan','actual'],barmode='group',
+              title='custom tick labels with ticklabelmode="period"')
+fig.update_xaxes(
+    dtick="M1",
+    tickformat="%b\n%Y",
+    )
+fig.update_layout(
+    autosize=True)
 layout = html.Div(
     [
         dbc.Row(
             [               
                 dbc.Col(
                     [
-                            html.P("Commodity Satus",
-                           style={"color": "black",
-                                  "font-size": "15px",
-                                  'margin-top': '15px',
-                                  'margin-bottom': '15px',
-                                  'line-height': '1.2',
-                                  'text-align': 'center'
-                                  }
-                           ),                           
-                        ],width=8,
+dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice',style={'width':'50%'}),
+ 
+                        ],
+                    
                     className='',
-                    xs=6,sm=6,md=6,lg=6,xl=6,xxl=6
+                    width=4
+                    ),
+                                dbc.Col(
+                    [
+
+dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice2',style={'width':'50%'}), 
+                        ],
+                    
+                    className='',
+                    width=4
                     ),
                 dbc.Col(
                     [
@@ -52,11 +58,12 @@ layout = html.Div(
                                   }
                            ),
                     
-                            dcc.Graph(figure=fig)
+                        
                         
                         ],
-                    width=10,
+                  
                     className='',
+                     xs=10,sm=10,md=10,lg=10,xl=10,xxl=10
                     ),
                 html.Br(),
                 ]),
@@ -72,33 +79,30 @@ layout = html.Div(
                                   'line-height': '1.2',
                                   'text-align': 'center'
                                   }
-                           )    
+                           ),
+                            dcc.Graph(id='commodity-progress',figure=fig)
                         ],
+                    
                     className='',
-                    xs=6,sm=6,md=6,lg=6,xl=6,xxl=6
+                    xs=10,sm=10,md=10,lg=10,xl=10,xxl=10
                     ),
-                        ]),
-                dbc.Row(
-            [               
-                dbc.Col(
-                    [   
-                            html.P("1",
-                           style={"color": "black",
-                                  "font-size": "15px",
-                                  'margin-top': '15px',
-                                  'margin-bottom': '15px',
-                                  'line-height': '1.2',
-                                  'text-align': 'center'
-                                  }
-                           )    
-                        ],
-                    className='',
-                    xs=6,sm=6,md=6,lg=6,xl=6,xxl=6
-                    ),
-                html.Br(),
-                ]),      
-                        ]),
+                        ])
+        ])
 
+@callback(
+    Output('commodity-progress', 'figure'),
+    Input('disc-choice', 'value'))
+def update_output(value):
+    ts = data[data.commodity==value]
+    fig = px.histogram(ts,x='date', y=['plan','actual'],barmode='group',
+              title='custom tick labels with ticklabelmode="periodx123"')
+    fig.update_xaxes(
+    dtick="M1",
+    tickformat="%b\n%Y",
+    )
+    fig.update_layout(
+    autosize=True)
+    return fig
               
 
 
