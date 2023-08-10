@@ -3,17 +3,9 @@ from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
-import plotly.io as pio
 
 
 
-
-
-
-
-
-
-  
 dash.register_page(__name__,name='Commodity Status')
 data = pd.read_excel('assets/data.xlsx', sheet_name='commodity')
 fig = px.histogram(data,x='date', y=['plan','actual'],barmode='group',
@@ -30,19 +22,16 @@ layout = html.Div(
             [               
                 dbc.Col(
                     [
-dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice',style={'width':'50%'}),
+dcc.Dropdown(options=[x for x in data.commodity.unique()],id='commodity-choice',value='Concrete (m3)',style={'width':'60%'}),
  
                         ],
-                    
                     className='',
-                    width=4
+                    width=5
                     ),
                                 dbc.Col(
                     [
-
-dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice2',style={'width':'50%'}), 
+dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice2',value='Concrete (m3)',style={'width':'50%'}), 
                         ],
-                    
                     className='',
                     width=4
                     ),
@@ -57,9 +46,6 @@ dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice2',styl
                                   'text-align': 'center'
                                   }
                            ),
-                    
-                        
-                        
                         ],
                   
                     className='',
@@ -91,9 +77,10 @@ dcc.Dropdown(options=[x for x in data.commodity.unique()],id='disc-choice2',styl
 
 @callback(
     Output('commodity-progress', 'figure'),
-    Input('disc-choice', 'value'))
+    Input('commodity-choice', 'value'))
 def update_output(value):
     ts = data[data.commodity==value]
+    
     fig = px.histogram(ts,x='date', y=['plan','actual'],barmode='group',
               title='custom tick labels with ticklabelmode="periodx123"')
     fig.update_xaxes(
