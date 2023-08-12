@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from flask import Flask
 
 server=Flask(__name__)
-app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.SUPERHERO,dbc.icons.BOOTSTRAP])
+app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.BOOTSTRAP,dbc.icons.BOOTSTRAP])
 
 sidebar=dbc.Nav(
     [
@@ -52,7 +52,7 @@ app.layout=dbc.Container([
                 [
                     dash.page_container
                     ],)
-            ])
+            ],xs=10,sm=10,md=10,lg=10,xl=10,xxl=10)
             ]
         ),
 
