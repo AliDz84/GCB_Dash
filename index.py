@@ -4,10 +4,17 @@ from dash import dcc
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from flask import Flask
+import sqlite3
+import pandas as pd
+from datetime import datetime
 
 server=Flask(__name__)
-app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.DARKLY])
-
+app=dash.Dash(__name__,use_pages=True,server=server,external_stylesheets=[dbc.themes.SUPERHERO])
+con = sqlite3.connect("assets/db.db")
+data = pd.read_sql_query("SELECT * from general_info", con)
+data_date=datetime.strptime(data.iloc[0, 1],'%Y-%m-%d %H:%M:%S')
+data_date=data_date.strftime("%d-%m-%Y")
+print(type(data_date))
 sidebar=dbc.Nav(
     [
         dbc.NavLink(
@@ -29,7 +36,7 @@ app.layout=dbc.Container([
         dbc.Row(
         [
         dbc.Col([
-            html.Img(src="assets/logo.png",className = 'left',style={'margin-top': '20px','margin-left':'20px'}),
+            html.Img(src="assets/logo.jpg",className = 'left',style={'margin-top': '20px','margin-left':'20px'}),
             html.Br(),
             html.Br(),
             html.Br(),
@@ -43,9 +50,9 @@ app.layout=dbc.Container([
             dbc.Row(
                 [           
             html.Div("CONSTRUCTION OF SEPARATION AND DECARBONATION UNITS AT ALRAR EPC2 LOT 1",
-                        style={'frontsize':'30','textAlign':'left','color':'#ffffff','margin-top':'20px','background-color':'OrangeRed'}),
-            html.Div("- DASHBOARD",
-                        style={'frontsize':'30','bold':'True','textAlign':'left','color':'#ffffff','background-color':'OrangeRed'}),
+                        style={'frontsize':'30','textAlign':'center','color':'#ffffff','margin-top':'20px','background-color':'OrangeRed'}),
+            html.Div("- DASHBOARD - Mise à jour: "+data_date,
+                        style={'frontsize':'30','bold':'True','textAlign':'center','color':'#ffffff','background-color':'OrangeRed'}),
             html.Hr(),
                     ]),
             dbc.Row(
@@ -55,10 +62,7 @@ app.layout=dbc.Container([
             ],xs=10,sm=10,md=10,lg=10,xl=10,xxl=10)
             ]
         ),
-
-    ],fluid=True)
-
-   
+    ],fluid=True)  
 
 if __name__ == '__main__':
     app.run_server()

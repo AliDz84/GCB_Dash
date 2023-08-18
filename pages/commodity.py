@@ -4,14 +4,15 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objs as go
+import sqlite3
+import numpy as np
 
-
-dash.register_page(__name__,name='Commodity Status')
-#read data from database
-data = pd.read_excel('assets/data.xlsx', sheet_name='commodity')
-
+dash.register_page(__name__,name='Avancements des activités')
+con = sqlite3.connect("assets/db.db")
+data = pd.read_sql_query("SELECT * from commodity", con)
+scope=pd.read_sql_query("SELECT * from scope", con)
 fig = px.histogram(data,x='date', y=['Planifié','Réalisé'],barmode='group',
-              title="Avancements mensuels de: "+"Béton armé (m3)")
+              title="")
 fig.update_xaxes(
     dtick="M1",
     tickformat="%b\n%Y",
@@ -26,19 +27,15 @@ fig.update_layout(
     yaxis_title="Quantité",
     legend_title="Légende")
 
-
-
 layout = html.Div(
     [
         dbc.Row(
             [               
-
              dbc.Col(
                     [
-        dcc.Dropdown(options=['Avancements mensuels', 'Avancements cumulés', 'Ecarts planning'],id='menu',value="Avancements mensuels",style={'width':'90%'}),
+        dcc.Dropdown(options=['Quantités mensuelles', 'Quantités cumulées', 'Ecarts planning'],id='menu',value="Quantités mensuelles",style={'width':'90%'}),
                         ],
                     className='',
-                 
                     xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
                     ),
         dbc.Col(
@@ -46,91 +43,14 @@ layout = html.Div(
         dcc.Dropdown(options=[x for x in data.commodity.unique()],id='commodity-choice',value="Béton armé",style={'width':'90%'}),
                         ],
                     className='',
-                 
                     xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
                     ),
              dbc.Col(
                     [
-                html.Div(id='qty-totale',children="non",style={
-                        'backgroundColor':'DarkOrange',
-                        'color':'white',
-                        'font-weight': 'bold',
-                        "border-style": "ridge",
-                        'height':'40px',
-                        'text-align':'center',
-                        'width':'80%',
-                        'display':'inline-block'
-               })  
                         ],
                     className='',
-                   xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
+                   xs=8,sm=8,md=8,lg=8,xl=8,xxl=8
                     ),
-             dbc.Col(
-                    [
-                html.Div(id='cum-act-qty',children="non", style={
-                        'backgroundColor':'blue',
-                        'color':'white',
-                        'font-weight': 'bold',
-                        "border-style": "ridge",
-                        'height':'40px',
-                        'text-align':'center',
-                        'width':'80%',
-                        'display':'inline-block'
-               })  
-                        ],
-                    className='',
-                   xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
-                    ),
-                         dbc.Col(
-                    [
-                html.Div(id='cum-act-qty-percent',children="non", style={
-                        'backgroundColor':'BlueViolet',
-                        'color':'white',
-                        'font-weight': 'bold',
-                        "border-style": "ridge",
-                        'height':'40px',
-                        'text-align':'center',
-                        'width':'80%',
-                        'display':'inline-block'
-               })  
-                        ],
-                    className='',
-                   xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
-                    ),
-                                      dbc.Col(
-                    [
-                html.Div(id='cum-planning-qty',children="non", style={
-                        'backgroundColor':'Green',
-                        'color':'white',
-                        'font-weight': 'bold',
-                        "border-style": "ridge",
-                        'height':'40px',
-                        'text-align':'center',
-                        'width':'80%',
-                        'display':'inline-block'
-               })  
-                        ],
-                    className='',
-                   xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
-                    ),
-                dbc.Col(
-                    [
-                html.Div(id='ecart-planning',children="non", style={
-                        'backgroundColor':'Magenta',
-                        'color':'white',
-                        'font-weight': 'bold',
-                        "border-style": "ridge",
-                        'height':'40px',
-                        'text-align':'center',
-                        'width':'80%',
-                        'display':'inline-block'
-               })  
-                        ],
-                    className='h-50',
-
-                   xs=2,sm=2,md=2,lg=2,xl=2,xxl=2
-                    ),
-         
              html.Br(),
              html.Br(),
                 html.Hr(),
@@ -145,7 +65,6 @@ layout = html.Div(
                     xs=12,sm=12,md=12,lg=12,xl=12,xxl=12
                     ),
                         ]),
-        
         ])
 @callback(
     Output('graph','figure'),
@@ -153,22 +72,34 @@ layout = html.Div(
     Input('commodity-choice', 'value')
 )
 def update_graph(value1,value2):
-    if value1=="Avancements mensuels":
-        ts = data[data.commodity==value2]
-        fig = px.histogram(ts,x='date', y=['Planifié','Réalisé'],barmode='group',
-        title="Avancement mensuel de: "+value2)
+    if value1=="Quantités mensuelles":
+        ts1 = data[data.commodity==value2]
+        ts2 = scope[scope.commodity==value2]
+        qty_totale="Qté totale= "+"{:.0f}".format(ts2['scope'].sum())+" "+str(ts2.iloc[0, 2])
+        qty_actual="Qté réalisée= "+"{:.0f}".format(ts2['cum_actual'].sum())+" "+str(ts2.iloc[0, 2])
+        qty_plan="Qté planifiée= "+"{:.0f}".format(ts2['cum_plan'].sum())+" "+str(ts2.iloc[0, 2])
+        av="AV %= "+"{:.1%}".format(ts2['progress'].sum())
+        var="Ecart planning= "+"{:.0f}".format(ts2['ecart_planning'].sum())+" "+str(ts2.iloc[0, 2])
+        fig = px.histogram(ts1,x='date', y=['Planifié','Réalisé'],barmode='group', color_discrete_sequence=['orange','blue'],
+        title=str(value2)+"   "+qty_totale+"   "+qty_plan+"   "+qty_actual+"   "+av+"   "+var,text_auto=True)
         fig.update_xaxes(
         dtick="M1",
         tickformat="%b\n%Y",)
         fig.update_layout(
         autosize=True,
         xaxis_title="Date",
-        yaxis_title="Quantité",
+        yaxis_title="Quantité mensuelle ("+str(ts2.iloc[0, 2])+")",
         legend_title="Légende")
-    if value1=="Avancements cumulés":
-        ts = data[data.commodity==value2]
-        trace_1 = go.Scatter(x=ts['date'], y=ts['Cum plan'], mode='lines', line=dict(color="orange"),name='Qty prévue')
-        trace_2 = go.Scatter(x=ts['date'], y=ts['Cum actual'], mode='lines', line=dict(color="blue"),name='Qty réalisée',)
+    if value1=="Quantités cumulées":
+        ts1 = data[data.commodity==value2]
+        ts2 = scope[scope.commodity==value2]
+        qty_totale="Qté totale= "+"{:.0f}".format(ts2['scope'].sum())+" "+str(ts2.iloc[0, 2])
+        qty_actual="Qté réalisée= "+"{:.0f}".format(ts2['cum_actual'].sum())+" "+str(ts2.iloc[0, 2])
+        qty_plan="Qté planifiée= "+"{:.0f}".format(ts2['cum_plan'].sum())+" "+str(ts2.iloc[0, 2])
+        av="AV %= "+"{:.1%}".format(ts2['progress'].sum())
+        var="Ecart planning= "+"{:.0f}".format(ts2['ecart_planning'].sum())+" "+str(ts2.iloc[0, 2])
+        trace_1 = go.Scatter(x=ts1['date'], y=ts1['Cum plan'], mode='lines', line=dict(color="orange"),name='Qty prévue')
+        trace_2 = go.Scatter(x=ts1['date'], y=ts1['Cum actual'], mode='lines', line=dict(color="blue"),name='Qty réalisée')
         fig = go.Figure([
         trace_1, trace_2
         ])
@@ -178,63 +109,32 @@ def update_graph(value1,value2):
         fig.update_layout(
         autosize=True,
         xaxis_title="Date",
-        yaxis_title="Avancements cumulés %",
+        yaxis_title="Quantité cumulée ("+str(ts2.iloc[0, 2])+")",
         legend_title="Légende",
-        title="Avancements cumulés de "+str(value2))
-       
+        title=str(value2)+"   "+qty_totale+"   "+qty_plan+"   "+qty_actual+"   "+av+"   "+var)
     if value1=="Ecarts planning":
-        ts = data[data.commodity==value2]
-        fig = px.bar(ts,x='date', y=['Ecart'],
-        title="Ecart planning de "+str(value2))
+        ts1 = data[data.commodity==value2]
+        ts2 = scope[scope.commodity==value2]
+        qty_totale="Qté totale= "+"{:.0f}".format(ts2['scope'].sum())+" "+str(ts2.iloc[0, 2])
+        qty_actual="Qté réalisée= "+"{:.0f}".format(ts2['cum_actual'].sum())+" "+str(ts2.iloc[0, 2])
+        qty_plan="Qté planifiée= "+"{:.0f}".format(ts2['cum_plan'].sum())+" "+str(ts2.iloc[0, 2])
+        av="AV %= "+"{:.1%}".format(ts2['progress'].sum())
+        var="Ecart planning= "+"{:.0f}".format(ts2['ecart_planning'].sum())+" "+str(ts2.iloc[0, 2])
+        ts1["Color"] = np.where(ts1['Ecart']<0, 'red', 'green')
+        fig = px.bar(ts1,x='date', y=['Ecart'],
+        title=str(value2)+"   "+qty_totale+"   "+qty_plan+"   "+qty_actual+"   "+av+"   "+var)
         fig.update_xaxes(
         dtick="M1",
         tickformat="%b\n%Y",)
+        fig.update_traces(marker_color=ts1["Color"])
         fig.update_layout(
         autosize=True,
         xaxis_title="Date",
-        yaxis_title="Avancements cumulés %",
+        yaxis_title="Ecart planning ("+str(ts2.iloc[0, 2])+")",
         legend_title="Légende")
-
     return fig
 
-@callback(
-    Output('qty-totale', 'children'),
-    Input('commodity-choice', 'value'))    
-def update_output(value):
-    ts = data[data.commodity==value]
-    children="Qty Totale: "+"{:.0f}".format(ts['Scope'].sum())+" "+str(ts.iloc[0, 2])
-    return children
-@callback(
-    Output('cum-act-qty', 'children'),
-    Input('commodity-choice', 'value'))
-def update_output(value):
-    ts = data[data.commodity==value]
-    children="Cum qty Réalisée: "+"{:.0f}".format(ts['Cum actual'].sum())+" "+str(ts.iloc[0, 2])
-    return children
-@callback(
-    Output('cum-act-qty-percent', 'children'),
-    Input('commodity-choice', 'value'))
-def update_output(value):
-    ts = data[data.commodity==value]
-    children="% Qty Réalisée: "+"{:.1%}".format(ts['Cum actual'].sum()/ts['Scope'].sum())
-    return children
-@callback(
-    Output('cum-planning-qty', 'children'),
-    Input('commodity-choice', 'value'))
-def update_output(value):
-    ts = data[data.commodity==value]
-    ts = data[data.commodity==value]
-    ts = ts.loc[ts['Réalisé'].notnull()]
-    children="Qty Planifiée: "+"{:.0f}".format(ts['Cum plan'].sum())+" "+str(ts.iloc[0, 2])
-    return children
-@callback(
-    Output('ecart-planning', 'children'),
-    Input('commodity-choice', 'value'))
-def update_output(value):
-    ts = data[data.commodity==value]
-    ts = ts.loc[ts['Réalisé'].notnull()]
-    children="Ecart planning: "+"{:.0f}".format(ts['Cum var'].sum())+" "+str(ts.iloc[0, 2])
-    return children
+
 
 
 
